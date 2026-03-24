@@ -15,3 +15,8 @@
 ## Important Constraints
 - Tránh trả lời vòng vo.
 - Tránh đốt token không cần thiết.
+- Khi push GitHub: dùng token trong .env, không hỏi lại.
+- Khi tạo file tạm để push, phải xóa ngay sau khi xong.
+- Mỗi lần push phải tạo thư mục ngày/tháng/năm để phân biệt, không đè nội dung cũ.
+- Cần clone source nào thì nhắn Con Lợn.
+- Các quy tắc/ưu tiên mới: Con Lợn chủ động ghi nhớ, không hỏi lại.
