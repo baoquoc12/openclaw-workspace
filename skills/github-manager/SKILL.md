@@ -8,13 +8,13 @@ description: Backup the entire /home/ubuntu/.openclaw/workspace into a date-stam
 ## Quy tắc bắt buộc
 - Dùng token trong `.env` của skill, **không hỏi lại**.
 - Khi backup: **luôn hỏi người dùng tên thư mục backup muốn đặt là gì**.
-- Nếu người dùng không muốn đặt tên riêng, dùng mặc định **`Backup`** + ngày/tháng/năm/giờ:phút theo **giờ Việt Nam**.
+- Nếu người dùng không muốn đặt tên riêng, dùng mặc định **`Backup`**.
+- Format backup phải là: `TênBackup/dd/mm/yyyy/HH:MM` theo **giờ Việt Nam**.
 - Backup phải lấy **toàn bộ source trong `/home/ubuntu/.openclaw/workspace`**.
-- Chỉ loại trừ các thứ nhạy cảm hoặc gây lặp: `.git`, `.env`, `.openclaw`, và chính thư mục backup đang tạo.
+- Chỉ loại trừ: `.git`, `.env`, `.openclaw`, `.gitignore`, và chính thư mục backup đang tạo.
 - Tạo file tạm để push thì **xóa ngay** sau khi xong.
 - Hướng dẫn bằng **tiếng Việt** rõ ràng.
 - Trước khi push, script sẽ tự **pull --rebase** để giảm lỗi lệch commit.
-- Nếu repo local đang có thay đổi chưa commit, script sẽ **tự stash tạm**, backup xong rồi **khôi phục lại stash**.
 - Cố định dùng nhánh **main**.
 - Khi clone, mặc định gợi ý và ưu tiên thư mục đích là: `/home/ubuntu/.openclaw/workspace/skills`
 - Chỉ clone sang chỗ khác nếu user yêu cầu rõ.
@@ -37,20 +37,10 @@ Sau đó mở `.env` và điền dữ liệu thật.
 ## Cấu hình mẫu
 Ví dụ `.env.example`:
 ```env
-# GitHub token (dạng HTTPS token)
 GITHUB_TOKEN=
-
-# GitHub username
 GITHUB_USERNAME=
-
-# Link repo GitHub dạng HTTPS
 GITHUB_REPO_URL=
-
-# Đường dẫn thư mục repo local dùng để push backup
-# Mặc định nên là: /home/ubuntu/.openclaw/workspace
 URL_SOURCE_BACKUP=/home/ubuntu/.openclaw/workspace
-
-# Tên backup mặc định nếu user không muốn tự đặt
 BACKUP_NAME=Backup
 ```
 
@@ -58,9 +48,9 @@ BACKUP_NAME=Backup
 ### 1) Backup (lệnh “backup”)
 - Hỏi người dùng: **muốn đặt tên backup là gì?**
 - Nếu user không đặt, dùng `Backup`.
-- Tạo thư mục theo cấu trúc: `TênBackup/dd/mm/yyyy/giờ:phút` theo **giờ Việt Nam**.
+- Tạo thư mục theo cấu trúc: `TênBackup/dd/mm/yyyy/HH:MM` theo **giờ Việt Nam**.
 - Copy **toàn bộ source trong `/home/ubuntu/.openclaw/workspace`** vào thư mục đó.
-- Loại trừ: `.git`, `.env`, `.openclaw`, và chính thư mục backup đang tạo.
+- Loại trừ: `.git`, `.env`, `.openclaw`, `.gitignore`, và chính thư mục backup đang tạo.
 - Tự `pull --rebase`, rồi `git add`, `commit`, `push`.
 - Nếu lỗi, báo tiếng Việt ngắn gọn.
 
@@ -71,8 +61,7 @@ bash scripts/backup_push.sh [ten_thu_muc_backup]
 
 ### 2) Clone (lệnh “clone <link>”)
 - Nếu user nói **clone + link**, mặc định hiểu là clone về: `/home/ubuntu/.openclaw/workspace/skills`
-- Hỏi/gợi ý user: **mặc định Con Lợn sẽ clone về `/home/ubuntu/.openclaw/workspace/skills`, nếu muốn đổi chỗ thì nói rõ đường dẫn**.
-- Nếu user không nói gì thêm, clone vào thư mục mặc định đó.
+- Chỉ đổi chỗ clone nếu user yêu cầu rõ đường dẫn khác.
 - Nếu user muốn chỉ lấy 1 folder trong repo, dùng sparse checkout.
 - Nếu không, clone full repo.
 
@@ -83,11 +72,9 @@ bash scripts/clone_sparse.sh <repo_url> <target_dir> [path_in_repo]
 
 ## Khi user yêu cầu
 - “backup” → hỏi tên thư mục backup, rồi chạy backup + push.
-- “clone <link>” → gợi ý mặc định clone vào `/home/ubuntu/.openclaw/workspace/skills`; chỉ hỏi thêm nếu user muốn đổi.
+- “clone <link>” → mặc định clone vào `/home/ubuntu/.openclaw/workspace/skills`.
 - Nếu user muốn chỉ lấy 1 folder → dùng sparse checkout.
 
 ## Lưu ý an toàn
 - Không ghi token vào file khác ngoài `.env` trong thư mục skill.
 - Không commit `.env`.
-- Nếu `pull --rebase` báo conflict, dừng và báo user xử lý conflict.
-- Nếu `stash pop` lỗi, báo user kiểm tra `git stash list`.

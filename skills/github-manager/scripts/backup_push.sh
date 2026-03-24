@@ -45,11 +45,12 @@ DEST_PATH="$WORKSPACE_ROOT/$BACKUP_LABEL/$DATE_DAY/$DATE_MONTH/$DATE_YEAR/$TIME_
 
 mkdir -p "$DEST_PATH"
 
-# Copy từ filesystem thật, không phụ thuộc git tracked/untracked
+# Copy toàn bộ source thật, loại các thứ không muốn lôi vào backup
 rsync -a \
   --exclude='.git' \
   --exclude='.env' \
   --exclude='.openclaw' \
+  --exclude='.gitignore' \
   --exclude="$BACKUP_LABEL" \
   "$WORKSPACE_ROOT/" "$DEST_PATH/"
 
