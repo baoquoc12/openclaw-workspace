@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "skills": {
+    "seo": {
+      "version": "1.0.3",
+      "installedAt": 1774369562150
+    },
+    "gog": {
+      "version": "1.0.0",
+      "installedAt": 1774407366463
+    }
+  }
+}
